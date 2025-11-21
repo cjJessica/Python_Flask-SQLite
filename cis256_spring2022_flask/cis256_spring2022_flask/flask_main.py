@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from string import Template
+
+from cis256_spring2022_flask.cis256_spring2022_flask.searchwtf import ByPublisherIdWTF
 from loginwtf import LoginWTF
 from searchwtf import SearchWTF,ByAuthorIdWTF
 from booksdb import BooksDB
@@ -127,7 +129,8 @@ def search_router(searchtype):
     elif searchtype == 'byTitle':
         return "You Choose by Title"
     elif searchtype == 'byPublisher':
-        return "You Choose by Publisher"
+        bypublisherform = ByPublisherIdWTF()
+        return render_template('bypublisher.html', form=bypublisherform)
 
 
 @app.route('/results/<option>', methods=['POST'])
@@ -139,7 +142,9 @@ def search_results(option=None):
         books = mydb.getbooksbyauthorid(request.form['author_choice'])
         return render_template('booksbyauthorid.html', data=books)
     elif option == "booksbypublisherid":
-        return "Should list books by publisherid"
+        mydb = BooksDB()
+        books = mydb.getbooksbypublisherid(request.form['publisher_choice'])
+        return render_template('booksbypublisherid.html', data=books)
     elif option == "booksbytitle":
         return "Should list books by title"
 
